@@ -90,7 +90,10 @@ body {
 .tab:focus-visible, .btn:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
 .panel[hidden] { display: none; }
 .panel.active { animation: fade 0.25s ease; }
-@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
 /* ===== Carte de solde ===== */
 .balance-card {
   background: linear-gradient(135deg, var(--blue), #3a5ff0);
@@ -115,9 +118,13 @@ body {
   50% { box-shadow: 0 0 0 12px rgba(255, 106, 26, 0.08); }
 }
 .balance-amount { font-size: clamp(1.8rem, 6vw, 2.8rem); font-weight: 700; margin: 8px 0 14px; }
-.balance-meta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 0.85rem; opacity: 0.95; }
+.balance-meta {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+  font-size: 0.85rem; opacity: 0.95;
+}
 .badge { padding: 3px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
 .badge-frozen { background: var(--red); color: #fff; }
+
 /* ===== Boutons ===== */
 .actions { display: flex; gap: 12px; margin: 18px 0; flex-wrap: wrap; }
 .btn {
@@ -159,8 +166,6 @@ body {
   font-size: 0.72rem; font-weight: 700; padding: 2px 10px; border-radius: 999px;
 }
 .status-paid { background: #e3f6ec; color: var(--green); }
-.status-pending { background: #fff0e4; color: var(--orange); }
-.status-blocked { background: #fde8e4; color: var(--red); }
 /* ===== Dialogue ===== */
 dialog {
   border: 0; border-radius: 20px; padding: 28px;
@@ -181,6 +186,7 @@ dialog p { color: var(--muted); margin-bottom: 20px; }
   .profile-text { display: none; }
   .topbar { padding: 12px 16px; }
   .tab { font-size: 0.85rem; }
+  .tx-meta { font-size: 0.75rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
