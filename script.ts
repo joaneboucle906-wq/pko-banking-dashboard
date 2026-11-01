@@ -7,17 +7,16 @@ type TabId = "overview" | "history";
 type BlockedAction = "transfer" | "withdraw";
 interface Transaction {
   readonly id: number;
-  readonly recipient: string; // nom de l'employé
-  readonly role: string;      // poste occupé
-  readonly date: string;      // format ISO AAAA-MM-JJ
-  readonly amount: number;    // montant en PLN (valeur positive)
+  readonly recipient: string;
+  readonly role: string;
+  readonly date: string; // AAAA-MM-JJ
+  readonly amount: number; // PLN, valeur positive
 }
 // ===== Données fictives =====
 const TOTAL_BALANCE = 70_000_000;
 const CURRENCY = "PLN";
 const FATHER_NAME = "Tadeusz Nowak";
 const PAYMENT_DATE = "2026-10-28";
-// 11 derniers salaires, du plus haut poste au plus bas
 const TRANSACTIONS: readonly Transaction[] = [
   { id: 1,  recipient: "Jean-Marc Vanderberghe", role: "PDG / CEO",                          date: PAYMENT_DATE, amount: 45000 },
   { id: 2,  recipient: "Mateusz Kowalski",       role: "Directeur Général",                  date: PAYMENT_DATE, amount: 32000 },
@@ -46,103 +45,103 @@ function getElement<T extends HTMLElement>(selector: string, type: new () => T):
   }
   return el;
 }
-/** Formate un montant en PLN (ex. 45 000 PLN). */
-const formatMoney = (value: number): string =>
-  `${new Intl.NumberFormat("fr-FR").format(value)} ${CURRENCY}`;
-const formatDate = (iso: string): string =>
-  new Intl.DateTimeFormat("fr-FR", { day: "2-digit", month: "short", year: "numeric" })
-    .format(new Date(iso));
-// ===== Références DOM =====
-const tabButtons = Array.from(document.querySelectorAll<HTMLButtonElement>(".tab"));
-const panels = Array.from(document.querySelectorAll<HTMLElement>(".panel"));
-const balanceEl = getElement("#balance", HTMLElement);
-const employeesEl = getElement("#stat-employees", HTMLElement);
-const totalEl = getElement("#stat-total", HTMLElement);
-const txListEl = getElement("#tx-list", HTMLUListElement);
-const dialogEl = getElement("#block-dialog", HTMLDialogElement);
-const dialogMsgEl = getElement("#dialog-message", HTMLElement);
-const dialogCloseBtn = getElement("#dialog-close", HTMLButtonElement);
+/** Formate un montant : 70 000 000,00 PLN (decimals = nombre de décimales). */
+function formatMoney(value: number, decimals: number = 0): string {
+  const nombre = new Intl.NumberFormat("fr-FR", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(value);
+  return `${nombre} ${CURRENCY}`;
+}
+function formatDate(iso: string): string {
+  return new Intl.DateTimeFormat("fr-FR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(iso));
+}
 // ===== Rendu =====
-/** Résumé de la vue d'ensemble : solde, nombre d'employés, total des salaires. */
+/** Affiche le solde (avec 2 décimales), le nombre d'employés et le total des salaires. */
 function renderSummary(): void {
-  balanceEl.textContent = formatMoney(TOTAL_BALANCE);
-  employeesEl.textContent = String(TRANSACTIONS.length);
-  totalEl.textContent = formatMoney(
+  getElement("#balance", HTMLElement).textContent = formatMoney(TOTAL_BALANCE, 2);
+  getElement("#stat-employees", HTMLElement).textContent = String(TRANSACTIONS.length);
+  getElement("#stat-total", HTMLElement).textContent = formatMoney(
     TRANSACTIONS.reduce((sum, t) => sum + t.amount, 0)
   );
 }
 /** Injecte les 11 virements dans la liste de l'onglet "Historique". */
 function renderTransactions(): void {
-  txListEl.replaceChildren(); // vide la liste avant de la remplir
-for (const tx of TRANSACTIONS) {
+  const list = getElement("#tx-list", HTMLUListElement);
+  list.replaceChildren(); // vide la liste avant de la remplir
+  for (const tx of TRANSACTIONS) {
     const li = document.createElement("li");
     li.className = "tx";
-  // Colonne gauche : nom + poste + date
-    const info = document.createElement("div");
+ const info = document.createElement("div");
     const name = document.createElement("div");
     name.className = "tx-name";
-    name.textContent = `${tx.id}. ${tx.recipient}`; // textContent : pas d'injection HTML
+    name.textContent = `${tx.id}. ${tx.recipient}`;
     const meta = document.createElement("div");
     meta.className = "tx-meta";
     meta.textContent = `${tx.role} · Salaire · ${formatDate(tx.date)}`;
     info.append(name, meta);
-  // Colonne droite : montant négatif (débit) en PLN
-    const amount = document.createElement("div");
+  const amount = document.createElement("div");
     amount.className = "tx-amount";
     amount.textContent = `− ${formatMoney(tx.amount)}`;
- // Statut : salaire versé
-    const status = document.createElement("span");
+  const status = document.createElement("span");
     status.className = "tx-status status-paid";
     status.textContent = "Payé";
-  li.append(info, amount, status);
-    txListEl.appendChild(li);
+    li.append(info, amount, status);
+    list.appendChild(li);
   }
 }
 // ===== Onglets =====
+function isTabId(value: string | undefined): value is TabId {
+  return value === "overview" || value === "history";
+}
 /** Affiche l'onglet demandé et masque les autres (sans rechargement). */
 function switchTab(target: TabId): void {
-  tabButtons.forEach((btn) => {
+  document.querySelectorAll<HTMLButtonElement>(".tab").forEach((btn) => {
     const active = btn.dataset.tab === target;
     btn.classList.toggle("active", active);
     btn.setAttribute("aria-selected", String(active));
     btn.tabIndex = active ? 0 : -1;
   });
-  panels.forEach((panel) => {
+  document.querySelectorAll<HTMLElement>(".panel").forEach((panel) => {
     const active = panel.dataset.panel === target;
     panel.classList.toggle("active", active);
     panel.hidden = !active;
   });
-// Les 11 lignes sont injectées à chaque ouverture de l'onglet Historique
   if (target === "history") {
-    renderTransactions();
+    renderTransactions(); // rafraîchit la liste à chaque ouverture
   }
 }
-function isTabId(value: string | undefined): value is TabId {
-  return value === "overview" || value === "history";
-}
 // ===== Alertes de blocage =====
-function showBlockAlert(action: BlockedAction): void {
-  dialogMsgEl.textContent = BLOCK_MESSAGES[action];
-  dialogEl.showModal();
-}
 function isBlockedAction(value: string | undefined): value is BlockedAction {
   return value === "transfer" || value === "withdraw";
+}
+function showBlockAlert(action: BlockedAction): void {
+  getElement("#dialog-message", HTMLElement).textContent = BLOCK_MESSAGES[action];
+  getElement("#block-dialog", HTMLDialogElement).showModal();
 }
 // ===== Initialisation =====
 function init(): void {
   renderSummary();
-  tabButtons.forEach((btn) => {
+  renderTransactions(); // la liste est prête dès le chargement
+  document.querySelectorAll<HTMLButtonElement>(".tab").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.dataset.tab;
       if (isTabId(id)) switchTab(id);
     });
   });
- document.querySelectorAll<HTMLButtonElement>("[data-action]").forEach((btn) => {
+  document.querySelectorAll<HTMLButtonElement>("[data-action]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const action = btn.dataset.action;
       if (isBlockedAction(action)) showBlockAlert(action);
     });
   });
- dialogCloseBtn.addEventListener("click", () => dialogEl.close());
+  getElement("#dialog-close", HTMLButtonElement).addEventListener("click", () => {
+    getElement("#block-dialog", HTMLDialogElement).close();
+  });
 }
+
 init();
