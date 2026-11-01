@@ -11,7 +11,7 @@
   <div class="demo-ribbon" role="note">
     Démonstration – banque, personnages et données entièrement fictifs
   </div>
-  <!-- En-tête : logo + profil -->
+ <!-- En-tête : logo + profil -->
   <header class="topbar">
     <div class="brand">
       <!-- Logo original : soleil levant orange sur fond blanc -->
@@ -30,8 +30,8 @@
       </div>
     </div>
   </header>
-  <main class="container">
-   <!-- Bannière d'alerte de gel -->
+ <main class="container">
+  <!-- Bannière d'alerte de gel -->
     <section class="alert-banner" role="alert">
       <span class="alert-icon" aria-hidden="true">⚠</span>
       <p>
@@ -40,7 +40,7 @@
         <strong>Tadeusz Nowak</strong>.
       </p>
     </section>
-   <!-- Onglets -->
+  <!-- Onglets -->
     <nav class="tabs" role="tablist" aria-label="Navigation du compte">
       <button class="tab active" role="tab" id="tab-overview"
               aria-selected="true" aria-controls="panel-overview" data-tab="overview">
@@ -51,7 +51,7 @@
         Historique des virements
       </button>
     </nav>
- <!-- Onglet 1 : Vue d'ensemble -->
+  <!-- Onglet 1 : Vue d'ensemble -->
     <section class="panel active" role="tabpanel" id="panel-overview"
              aria-labelledby="tab-overview" data-panel="overview">
    <article class="balance-card">
@@ -59,17 +59,18 @@
           <span class="label">Solde total bloqué</span>
           <span class="lock" title="Compte gelé" aria-label="Compte gelé">🔒</span>
         </div>
-        <div class="balance-amount" id="balance">—</div>
-        <div class="balance-meta">
+  <!-- Montant écrit directement (&nbsp; = espace insécable, évite le retour à la ligne) -->
+        <div class="balance-amount" id="balance">70&nbsp;000&nbsp;000,00&nbsp;PLN</div>
+  <div class="balance-meta">
           <span class="badge badge-frozen">Gelé</span>
           <span>N° de compte : PL•• •••• •••• 4821</span>
         </div>
       </article>
-  <div class="actions">
+    <div class="actions">
         <button class="btn btn-forbidden" data-action="transfer">Nouveau virement</button>
         <button class="btn btn-forbidden" data-action="withdraw">Effectuer un retrait</button>
       </div>
-   <div class="summary-grid">
+    <div class="summary-grid">
         <article class="stat">
           <span class="label">Employés concernés</span>
           <span class="stat-value" id="stat-employees">—</span>
