@@ -9,10 +9,6 @@
   <script src="script.js" defer></script>
 </head>
 <body>
- <!-- Bandeau permanent : rappelle que tout est fictif -->
-  <div class="demo-ribbon" role="note">
-    Démonstration – banque, personnages et données entièrement fictifs
-  </div>
   <!-- En-tête : logo + profil -->
   <header class="topbar">
     <div class="brand">
@@ -23,7 +19,7 @@
       </svg>
       <span class="brand-name">Banque <strong>Aurora</strong></span>
     </div>
-   <div class="profile">
+  <div class="profile">
       <div class="avatar" aria-hidden="true">AN</div>
       <div class="profile-text">
         <span class="profile-name">Agata Nowak</span>
@@ -32,7 +28,7 @@
     </div>
   </header>
   <main class="container">
-   <!-- Bannière d'alerte de gel -->
+ <!-- Bannière d'alerte de gel -->
     <section class="alert-banner" role="alert">
       <span class="alert-icon" aria-hidden="true">⚠</span>
       <p>
@@ -52,10 +48,10 @@
         Historique des virements
       </button>
     </nav>
- <!-- Onglet 1 : Vue d'ensemble -->
+<!-- Onglet 1 : Vue d'ensemble -->
     <section class="panel active" role="tabpanel" id="panel-overview"
              aria-labelledby="tab-overview" data-panel="overview">
- <article class="balance-card">
+    <article class="balance-card">
         <div class="balance-head">
           <span class="label">Solde total bloqué</span>
           <span class="lock" title="Compte gelé" aria-label="Compte gelé">🔒</span>
@@ -67,11 +63,11 @@
           <span>N° de compte : PL•• •••• •••• 4821</span>
         </div>
       </article>
-     <div class="actions">
+  <div class="actions">
         <button class="btn btn-forbidden" data-action="transfer">Nouveau virement</button>
         <button class="btn btn-forbidden" data-action="withdraw">Effectuer un retrait</button>
       </div>
-     <div class="summary-grid">
+  <div class="summary-grid">
         <article class="stat">
           <span class="label">Employés concernés</span>
           <span class="stat-value" id="stat-employees">11</span>
@@ -83,21 +79,3 @@
         <article class="stat">
           <span class="label">Statut du dossier</span>
           <span class="stat-value">En cours</span>
-        </article>
-      </div>
-    </section>
-   <!-- Onglet 2 : Historique (liste remplie par le script) -->
-    <section class="panel" role="tabpanel" id="panel-history"
-             aria-labelledby="tab-history" data-panel="history" hidden>
-      <ul class="tx-list" id="tx-list"></ul>
-    </section>
-  </main>
-  <!-- Boîte de dialogue d'alerte -->
-  <dialog id="block-dialog" aria-labelledby="dialog-title">
-    <div class="dialog-icon" aria-hidden="true">🔒</div>
-    <h2 id="dialog-title">Opération impossible</h2>
-    <p id="dialog-message"></p>
-    <button class="btn btn-primary" id="dialog-close">J'ai compris</button>
-  </dialog>
-</body>
-</html>
